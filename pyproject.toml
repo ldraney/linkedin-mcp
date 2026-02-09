@@ -28,9 +28,6 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.uv.sources]
-ldraney-linkedin-sdk = { path = "../linkedin-sdk" }
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
