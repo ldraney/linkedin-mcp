@@ -1,0 +1,68 @@
+{
+  "manifest_version": "0.4",
+  "name": "ldraney-linkedin-mcp",
+  "display_name": "LinkedIn",
+  "version": "0.1.0",
+  "description": "MCP server for the LinkedIn API v202510 — create posts, upload media, manage engagement, and schedule content.",
+  "author": {
+    "name": "ldraney"
+  },
+  "server": {
+    "type": "uv",
+    "entry_point": "src/run_server.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": ["tool", "run", "ldraney-linkedin-mcp"],
+      "env": {
+        "LINKEDIN_ACCESS_TOKEN": "${user_config.linkedin_access_token}",
+        "LINKEDIN_PERSON_ID": "${user_config.linkedin_person_id}"
+      }
+    }
+  },
+  "user_config": {
+    "linkedin_access_token": {
+      "type": "string",
+      "title": "LinkedIn Access Token",
+      "description": "Your LinkedIn OAuth access token. Use the auth tools to obtain one.",
+      "sensitive": true,
+      "required": false
+    },
+    "linkedin_person_id": {
+      "type": "string",
+      "title": "LinkedIn Person ID",
+      "description": "Your LinkedIn person ID (the 'sub' field from userinfo).",
+      "required": false
+    }
+  },
+  "tools": [
+    { "name": "get_auth_url", "description": "Get LinkedIn OAuth authorization URL" },
+    { "name": "exchange_code", "description": "Exchange OAuth authorization code for access token" },
+    { "name": "save_credentials", "description": "Save LinkedIn credentials to OS keychain" },
+    { "name": "refresh_token", "description": "Refresh an expired LinkedIn access token" },
+    { "name": "create_post", "description": "Create a simple text post on LinkedIn" },
+    { "name": "get_my_posts", "description": "Get the authenticated user's recent posts" },
+    { "name": "delete_post", "description": "Delete a LinkedIn post" },
+    { "name": "update_post", "description": "Update an existing LinkedIn post" },
+    { "name": "create_post_with_link", "description": "Create a post with an article link preview" },
+    { "name": "create_post_with_image", "description": "Create a post with an uploaded image" },
+    { "name": "create_post_with_document", "description": "Create a post with an uploaded document" },
+    { "name": "create_post_with_video", "description": "Create a post with an uploaded video" },
+    { "name": "create_poll", "description": "Create a LinkedIn poll post" },
+    { "name": "create_post_with_multi_images", "description": "Create a post with multiple images" },
+    { "name": "add_comment", "description": "Add a comment to a LinkedIn post" },
+    { "name": "add_reaction", "description": "Add a reaction to a LinkedIn post" },
+    { "name": "get_user_info", "description": "Get the authenticated user's profile information" },
+    { "name": "schedule_post", "description": "Schedule a LinkedIn post for future publication" },
+    { "name": "list_scheduled_posts", "description": "List scheduled posts" },
+    { "name": "cancel_scheduled_post", "description": "Cancel a scheduled post" },
+    { "name": "get_scheduled_post", "description": "Get details of a scheduled post" }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "linux", "win32"],
+    "runtimes": {
+      "python": ">=3.10"
+    }
+  },
+  "keywords": ["linkedin", "social-media", "api", "posting", "oauth"],
+  "license": "MIT"
+}
