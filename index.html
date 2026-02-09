@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn MCP Server — ldraney-linkedin-mcp</title>
+  <meta name="description" content="Connect Claude to LinkedIn. 21 tools for posting, media uploads, engagement, and scheduling via the LinkedIn API v202510.">
+  <link rel="icon" href="data:,">
+  <meta property="og:title" content="LinkedIn MCP Server — ldraney-linkedin-mcp">
+  <meta property="og:description" content="Connect Claude to LinkedIn. 21 tools for posting, media uploads, engagement, and scheduling.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ldraney.github.io/linkedin-mcp/">
+  <style>
+    /* === Reset & Base === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8fafc;
+      --bg-alt: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #555;
+      --accent: #0a66c2;
+      --accent-hover: #004182;
+      --accent-light: #e8f1fa;
+      --border: #e2e8f0;
+      --green: #16a34a;
+      --code-bg: #f1f5f9;
+      --table-header: #f8fafc;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 4px 14px rgba(0,0,0,0.1);
+      --radius: 8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* === Hero === */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 64px;
+      background: linear-gradient(180deg, var(--accent-light) 0%, var(--bg) 100%);
+    }
+
+    .hero h1 {
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .hero .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto 40px;
+      line-height: 1.5;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: var(--shadow-lg);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .btn-secondary:hover {
+      background: var(--code-bg);
+      text-decoration: none;
+    }
+
+    .btn-secondary code {
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .hero-version {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* === Sections === */
+    section {
+      padding: 64px 0;
+    }
+
+    section + section {
+      border-top: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      max-width: 700px;
+    }
+
+    /* === Features === */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-alt);
+      padding: 28px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      display: block;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* === Tools Table === */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -24px;
+      padding: 0 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.925rem;
+      background: var(--bg-alt);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    thead th {
+      background: var(--table-header);
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody td:first-child {
+      font-weight: 600;
+      white-space: nowrap;
+      color: var(--accent);
+    }
+
+    tbody td code {
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* === Install === */
+    .install-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .install-card {
+      background: var(--bg-alt);
+      padding: 28px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .install-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .install-card ol {
+      padding-left: 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .install-card ol li {
+      margin-bottom: 4px;
+    }
+
+    .install-card code {
+      font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .install-card a {
+      word-break: break-all;
+    }
+
+    .note {
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: var(--accent-light);
+      border: 1px solid #b8d4f0;
+      border-radius: var(--radius);
+      font-size: 0.925rem;
+      color: #1e3a5f;
+    }
+
+    .note strong {
+      color: var(--accent-hover);
+    }
+
+    /* === Footer === */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+    }
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    /* === Responsive === */
+    @media (max-width: 640px) {
+      .hero { padding: 48px 16px 40px; }
+      .hero h1 { font-size: 2rem; }
+      .hero .subtitle { font-size: 1.05rem; }
+      .btn { padding: 12px 20px; font-size: 0.95rem; }
+      section { padding: 48px 0; }
+      .section-title { font-size: 1.4rem; }
+      thead th, tbody td { padding: 10px 12px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <h1>LinkedIn MCP Server</h1>
+      <p class="subtitle">Connect Claude to LinkedIn &mdash; 21 tools for posting, media uploads, engagement, and scheduling via the LinkedIn API.</p>
+      <div class="hero-ctas">
+        <a href="https://github.com/ldraney/linkedin-mcp/releases/latest/download/ldraney-linkedin-mcp.mcpb" class="btn btn-primary">
+          Download for Claude Desktop
+        </a>
+        <a href="#install" class="btn btn-secondary">
+          <code>uvx ldraney-linkedin-mcp</code>
+        </a>
+      </div>
+      <p class="hero-version">v__VERSION__ &middot; Python &ge; 3.10 &middot; MIT License</p>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="container">
+      <h2 class="section-title">Features</h2>
+      <p class="section-subtitle">Everything you need to manage your LinkedIn presence from Claude.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">OAuth</span>
+          <h3>Full OAuth flow</h3>
+          <p>Built-in OAuth 2.0 authorization with token refresh, OS keychain storage, and environment variable support. No external setup required.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">6</span>
+          <h3>Six media types</h3>
+          <p>Post with images, videos, documents (PDF/DOC/PPT), article links, polls, and multi-image carousels &mdash; all through simple tool calls.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">Cal</span>
+          <h3>Post scheduling</h3>
+          <p>Schedule posts for future publication with a local SQLite scheduler. List, inspect, and cancel scheduled posts at any time.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">++</span>
+          <h3>Engagement tools</h3>
+          <p>Add comments and reactions to posts. Retrieve your recent posts and profile information. Full read-write access to your LinkedIn activity.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section id="tools">
+    <div class="container">
+      <h2 class="section-title">21 Tools</h2>
+      <p class="section-subtitle">Complete coverage of the LinkedIn API v202510 for content creation and management.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Tools</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Auth (4)</td>
+              <td><code>get_auth_url</code> <code>exchange_code</code> <code>save_credentials</code> <code>refresh_token</code></td>
+            </tr>
+            <tr>
+              <td>Posts (4)</td>
+              <td><code>create_post</code> <code>get_my_posts</code> <code>delete_post</code> <code>update_post</code></td>
+            </tr>
+            <tr>
+              <td>Media (6)</td>
+              <td><code>create_post_with_link</code> <code>create_post_with_image</code> <code>create_post_with_document</code> <code>create_post_with_video</code> <code>create_poll</code> <code>create_post_with_multi_images</code></td>
+            </tr>
+            <tr>
+              <td>Engagement (2)</td>
+              <td><code>add_comment</code> <code>add_reaction</code></td>
+            </tr>
+            <tr>
+              <td>Users (1)</td>
+              <td><code>get_user_info</code></td>
+            </tr>
+            <tr>
+              <td>Scheduler (4)</td>
+              <td><code>schedule_post</code> <code>list_scheduled_posts</code> <code>cancel_scheduled_post</code> <code>get_scheduled_post</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section id="install">
+    <div class="container">
+      <h2 class="section-title">Install</h2>
+      <p class="section-subtitle">Multiple ways to get started. Authentication can be configured after install.</p>
+      <div class="install-methods">
+        <div class="install-card">
+          <h3>Claude Desktop (.mcpb)</h3>
+          <ol>
+            <li>Download <a href="https://github.com/ldraney/linkedin-mcp/releases/latest/download/ldraney-linkedin-mcp.mcpb">ldraney-linkedin-mcp.mcpb</a></li>
+            <li>Double-click the file to install in Claude Desktop</li>
+            <li>Enter your LinkedIn credentials when prompted, or use the OAuth tools to authenticate</li>
+          </ol>
+        </div>
+        <div class="install-card">
+          <h3>Claude Code / CLI</h3>
+          <p style="margin-bottom: 12px; color: var(--text-muted); font-size: 0.95rem;">Add to your MCP config (<code>~/.claude/settings.json</code> or project settings):</p>
+          <pre style="background: var(--code-bg); padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5;"><code>{
+  "mcpServers": {
+    "linkedin": {
+      "command": "uvx",
+      "args": ["ldraney-linkedin-mcp"],
+      "env": {
+        "LINKEDIN_ACCESS_TOKEN": "your_token",
+        "LINKEDIN_PERSON_ID": "your_person_id"
+      }
+    }
+  }
+}</code></pre>
+          <p style="margin-top: 12px; color: var(--text-muted); font-size: 0.9rem;">Or install with pip: <code>pip install ldraney-linkedin-mcp</code></p>
+        </div>
+      </div>
+      <div class="note">
+        <strong>Authentication options:</strong> You can set <code>LINKEDIN_ACCESS_TOKEN</code> and <code>LINKEDIN_PERSON_ID</code> as environment variables,
+        store them securely via the <code>save_credentials</code> tool (OS keychain), or use the built-in OAuth flow with <code>get_auth_url</code>.
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="https://github.com/ldraney/linkedin-mcp">GitHub</a>
+        <a href="https://pypi.org/project/ldraney-linkedin-mcp/">PyPI</a>
+        <a href="https://github.com/ldraney/linkedin-sdk">LinkedIn SDK</a>
+        <a href="https://github.com/ldraney/linkedin-mcp/issues">Issues</a>
+      </div>
+      <p>Built by <a href="https://github.com/ldraney">ldraney</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
