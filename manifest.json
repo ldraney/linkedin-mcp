@@ -2,7 +2,7 @@
   "manifest_version": "0.4",
   "name": "ldraney-linkedin-mcp",
   "display_name": "LinkedIn",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for the LinkedIn API v202510 — create posts, upload media, manage engagement, and schedule content.",
   "author": {
     "name": "ldraney"
