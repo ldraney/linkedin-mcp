@@ -2,6 +2,16 @@
 
 MCP server for the LinkedIn API v202510 — create posts, upload media, manage engagement, and schedule content.
 
+## Why this server?
+
+There are several LinkedIn MCP servers on GitHub (10+ at time of writing). Most fall into two camps: **scraper-based** servers that use browser automation / scraping (e.g. [adhikasp/mcp-linkedin](https://github.com/adhikasp/mcp-linkedin), [stickerdaniel/linkedin-mcp-server](https://github.com/stickerdaniel/linkedin-mcp-server), [alinaqi/mcp-linkedin-server](https://github.com/alinaqi/mcp-linkedin-server)), and **official-API** servers that only expose a handful of tools (e.g. [fredericbarthelet/linkedin-mcp-server](https://github.com/fredericbarthelet/linkedin-mcp-server) with 2 tools). This project takes a different approach: it uses the official LinkedIn API exclusively, covers a broad set of content-management and scheduling endpoints, and stores credentials securely.
+
+- **Full OAuth 2.0 flow with OS keychain storage** — tokens are stored in macOS Keychain, Windows Credential Manager, or Linux Secret Service via [keyring](https://pypi.org/project/keyring/). No plaintext tokens in config files.
+- **21 tools across 6 categories** — posts, 6 media types (link, image, multi-image, document, video, poll), engagement (comments + reactions), scheduling, user info, and auth. Most competing servers cover only a subset of these.
+- **Pinned to LinkedIn API v202510** — LinkedIn's v202601 release moved `get_my_posts`, `add_comment`, and `add_reaction` to partner-only access. This server pins to v202510 where those endpoints still work with standard OAuth tokens.
+- **Built-in post scheduler** — SQLite-backed queue for scheduling future posts, with tools to list, inspect, and cancel scheduled items.
+- **One-click `.mcpb` install** — ships a pre-built Claude Desktop extension so non-technical users can install without touching a terminal.
+
 ## Installation
 
 ### Claude Desktop (one-click)
