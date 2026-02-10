@@ -108,12 +108,14 @@ jobs:
 
       - name: Stamp version into landing page
         if: steps.pypi_check.outputs.exists == 'false'
-        run: sed -i 's/__VERSION__/${{ steps.version.outputs.version }}/g' index.html
+        run: |
+          mkdir -p _site
+          sed 's/__VERSION__/${{ steps.version.outputs.version }}/g' index.html > _site/index.html
 
       - name: Deploy to GitHub Pages
         if: steps.pypi_check.outputs.exists == 'false'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: _site
           keep_files: false
