@@ -135,6 +135,8 @@ def run_scheduler() -> None:
     """
     from linkedin_sdk import LinkedInClient
 
+    from .token_storage import get_credentials
+
     db = get_db()
     due = db.get_due()
 
@@ -142,7 +144,14 @@ def run_scheduler() -> None:
         print("No posts due for publishing.")
         return
 
-    client = LinkedInClient()
+    creds = get_credentials()
+    if creds:
+        client = LinkedInClient(
+            access_token=creds.get("accessToken"),
+            person_id=creds.get("personId"),
+        )
+    else:
+        client = LinkedInClient()
     for post in due:
         try:
             result = client.create_post(
