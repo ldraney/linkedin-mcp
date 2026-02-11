@@ -21,6 +21,10 @@ env/
 
 # Environment
 .env
+.mcp.json
+
+# Drafts (managed in Notion/mark, not here)
+drafts/
 
 # Testing
 .pytest_cache/
